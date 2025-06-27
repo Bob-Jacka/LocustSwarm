@@ -1,8 +1,14 @@
 from os import PathLike
 
+import gevent
+from locust.stats import (
+    stats_printer,
+    stats_history
+)
+
+from common.Exceptions.SwarmExceptions import SwarmExceptions
 from common.Locust import (
-    Locust,
-    global_logger
+    Locust
 )
 from common.Strategies import Context
 
@@ -15,24 +21,26 @@ class Swarm:
     StarCraft 2
     """
 
-    def __init__(self, page_to_destroy: str | PathLike, env, strategy: Context):
+    def __init__(self, page_to_destroy: str | PathLike, env, strat_context: Context, logger):
         """
         Wrapper class for locust swarm to check web performance
         """
-        self.__strategy_context = strategy
+        self.__strategy_context = strat_context
         self.locusts: list[Locust] = list()  # Users list
         self.page = page_to_destroy
         self.env = env
+        self.logger = logger
 
     def get_locusts(self):
         """
         Returns locusts list;
         :return: list with Locust entity
         """
-        if self.locusts is None and len(self.locusts) != 0:
+        if self.locusts is not None or len(self.locusts) != 0:
             return self.locusts
         else:
-            global_logger.log('Trying to get locusts, but locusts are None or len is 0')
+            self.logger.log('Trying to get locusts, but locusts are None or len is 0')
+            raise SwarmExceptions('Trying to get locusts, but locusts are None or len is 0')
 
     def get_locust_count(self) -> int:
         """
@@ -41,25 +49,32 @@ class Swarm:
         """
         return len(self.locusts)
 
-    def proceed_locusts(self, app_runner, locust_spawn_rate: int):
+    def proceed_locusts(self, app_runner, locust_spawn_rate: int, logger=None):
         """
         Main function for load test of the page
+        :param logger: logger entity of the proceed_locusts method
         :param locust_spawn_rate: spawn rate of the locusts
         :param app_runner: app runner
         :return: None
         """
         try:
-            global_logger.log(f'Using {self.__strategy_context.strategy.strat_name} strategy from swarm.')
-            start_locust_count = self.__strategy_context.strategy.user_count_start
-            global_logger.log("App started work")
+            self.logger.log(f'Using {self.__strategy_context.strategy.get_strat_name()} strategy from swarm')
+            self.logger.log("App started work")
+
+            start_locust_count = self.__strategy_context.strategy.get_user_count_start()
             user = Locust(self.page, env=self.env)
             self.locusts.append(user)
-            global_logger.log('Locust added')
+            self.logger.log('Locust added')
+            gevent.spawn(stats_printer(self.env.stats))
+            gevent.spawn(stats_history, app_runner)
             app_runner.start(start_locust_count, spawn_rate=locust_spawn_rate)
-            global_logger.log("App finished work")
+            gevent.spawn_later(self.__strategy_context.strategy.get_time_max(), app_runner.quit)
+            app_runner.greenlet.join()
+
+            self.logger.log("App finished work")
         except Exception as e:
-            global_logger.log(f'Error occurred in destroy_page - {e}')
-            raise RuntimeError()
+            self.logger.log(f'Error occurred in destroy_page - {e}')
+            raise SwarmExceptions(f'Exception in proceed_locusts - {e}.')
 
     def get_page(self):
         """
@@ -69,7 +84,8 @@ class Swarm:
         if self.page is not None:
             return self.page
         else:
-            global_logger.log('Page should not be None to get from swarm')
+            self.logger.log('Page should not be None to get from swarm')
+            raise SwarmExceptions('Page should not be None to get from swarm')
 
     def get_env(self):
         """
@@ -79,4 +95,5 @@ class Swarm:
         if self.env is not None:
             return self.env
         else:
-            global_logger.log('Env should not be None to get from swarm')
+            self.logger.log('Env should not be None to get from swarm')
+            raise SwarmExceptions('Env should not be None to get from swarm')

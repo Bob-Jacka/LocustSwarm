@@ -14,6 +14,7 @@ from locust.runners import Runner
 
 from common import LocustSettings
 from common.BotLogger import BotLogger
+from common.Exceptions.AppExceptions import AppExceptions
 from common.Locust import Locust
 from common.Strategies.Context import (
     StrategyEnum,
@@ -24,6 +25,8 @@ from common.Strategies.RampUp import RampUp
 from common.Strategies.SpikeTest import SpikeTest
 from common.Strategies.SustainLoad import SustainLoad
 from common.Swarm import Swarm
+
+localhost = '127.0.0.1'
 
 
 class App:
@@ -40,22 +43,28 @@ class App:
             LocustSettings.WEB_UI_PORT = params.setdefault('web_ui_port', None)  # get or default
             LocustSettings.LOCUSTS_START_COUNT = params.setdefault('locust_start_count', 10)
 
-        self.__swarm: Swarm | None = None
-        self.__strategy = self.get_strategy_by_enum(strategy)
-        self.__env = Environment(user_classes=[Locust], events=Events(), host='127.0.0.1')
-        self.__runner = self.__env.create_local_runner()
-        self.__web_ui = self.__env.create_web_ui(LocustSettings.WEB_UI_ADDRESS, LocustSettings.WEB_UI_PORT)
+        try:
+            self.__swarm: Swarm | None = None
+            self.__strategy = self.get_strategy_by_enum(strategy)
+            self.__env = Environment(user_classes=[Locust], events=Events(), host=localhost)
+            self.__runner = self.__env.create_local_runner()
+            self.__web_ui = self.__env.create_web_ui(LocustSettings.WEB_UI_ADDRESS, LocustSettings.WEB_UI_PORT)
+            self.__env.events.init.fire(environment=self.__env, runner=self.__runner, web_ui=self.__web_ui)
+        except Exception as e:
+            self.__logger.log(f'Error in app entity initialization - {e}')
+            raise AppExceptions(f'Error in app entity initialization - {e}.')
 
     def open_web_ui(self):
         """
         Function for opening Locust web ui
         :return: Web Locust ui or error message if error
         """
-        self.__logger.log('Open web ui')
         try:
+            self.__logger.log('Open web ui')
             self.__web_ui.start()
         except Exception as e:
             self.__logger.log(f'Error occurred while opening Locust web ui - {e}')
+            raise AppExceptions(f'Error occurred while opening Locust web ui - {e}')
 
     ## Runner methods
 
@@ -117,9 +126,10 @@ class App:
             self.__logger.log('Attempt to get swarm while swarm is None')
             self.__logger.log('Create swarm first')
 
-    def set_off_swarm_to_page(self, page: str | PathLike):
+    def set_off_swarm_to_page(self, page: str | PathLike, logger):
         """
         Set swarm off to some given page method
+        :param logger: Swarm logger
         :param page: page that will be destroyed by swarm
         :return: None
         """
@@ -128,13 +138,15 @@ class App:
                 self.__swarm = Swarm(
                     page_to_destroy=page,
                     env=self.__env,
-                    strategy=self.__strategy
+                    strat_context=self.__strategy,
+                    logger=logger
                 )
                 self.__logger.log('Swarm created')
             else:
                 self.__logger.log('Page is None!')
         except Exception as e:
             self.__logger.log(f'Error occurred in Setting swarm instance - {e}')
+            raise AppExceptions(f'Error occurred in Setting swarm instance - {e}.')
 
     def resolve_cli_args(self) -> dict[str, str | int] | None:
         """
@@ -153,7 +165,7 @@ class App:
                     resolved_args[arg_name] = arg_value
                 else:
                     self.__logger.log('Wrong argument received, expect arg with "--" and "="')
-                    raise RuntimeError('Argument error')
+                    raise AppExceptions('Argument error.')
             return resolved_args
         elif lenght == 2 and sys_args[1] == 'help':
             get_help()
@@ -177,12 +189,12 @@ class App:
                 case StrategyEnum.SPIKE_TEST:
                     strategy = SpikeTest()
                 case _:
-                    raise RuntimeError('Not implemented strategy yet')
+                    raise AppExceptions('Not implemented strategy yet')
             context = Context(strategy)
             return context
         else:
             self.__logger.log('Given strategy is None')
-            raise RuntimeError('None value strategy is given')
+            raise AppExceptions('None value strategy is given')
 
 
 def get_help():
@@ -193,7 +205,11 @@ def get_help():
     :return: None
     """
     print(f'Locust swarm with version {LocustSettings.APP_VERSION}.')
-    print('App need to get load test of web site')
+    print('''
+    App need to get load test of web sites
+    
+    '''
+          )
     print(
         f"""
         App params as follows:

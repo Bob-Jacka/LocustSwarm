@@ -8,17 +8,17 @@ class BotLogger:
     Custom logger class for telegram bot / Locust test and С+ web doc.
     """
 
-    __log_file: TextIO
+    __log_file: TextIO  # file for logs
     __logger: logging.Logger  # private instance of composite logger
-    is_file_write: bool  # is need write to file
+    __is_file_write: bool  # is need write to file
 
     def __init__(self, name: str, is_file_write: bool = False):
         self.__logger = logging.getLogger(name)
         if is_file_write:
-            self.is_file_write = True
+            self.__is_file_write = True
             self.__get_log_file()
         else:
-            self.is_file_write = False
+            self.__is_file_write = False
 
     def log(self, msg: str, *args, level=1, exc_info=None, stack_info=False, stacklevel=1, extra=None):
         """
@@ -33,8 +33,8 @@ class BotLogger:
         :return: None
         """
         try:
-            formated_msg = f"{(datetime.now())}: {msg}."
-            if self.is_file_write:
+            formated_msg = f"{(datetime.now())}: '{msg}'."
+            if self.__is_file_write:
                 self.__log_file.write(formated_msg)
                 self.__logger.log(msg=formated_msg, stacklevel=stacklevel, level=level)
                 print(formated_msg)
@@ -70,7 +70,7 @@ class BotLogger:
         Method for is writing info
         :return:
         """
-        return self.is_file_write
+        return self.__is_file_write
 
     def get_log_file(self):
         """
@@ -78,3 +78,10 @@ class BotLogger:
         :return:
         """
         return self.__log_file
+
+    def set_log_file_name(self):
+        """
+        Setter method for logger
+        :return: None
+        """
+        pass

@@ -4,10 +4,12 @@ from abc import (
 )
 from enum import Enum
 
+from common.Exceptions.StrategyExceptions import StrategyExceptions
+
 
 class StrategyEnum(Enum):
     """
-    Allowed strategies of the app
+    Allowed strategies of the app to use
     """
 
     PEAK = 'peak',  # peak load
@@ -22,23 +24,52 @@ class Strategy(ABC):
     A context uses this interface to invoke the algorithm defined by the Concrete Strategies.
     """
 
-    def __init__(self, time_at_least: int = 0, time_max: int = 0, user_count_start: int = 0, user_count_end: int = 0, strat_name: str = ""):
-        self.time_at_least = time_at_least
-        self.time_max = time_max
-        self.user_count_start = user_count_start
-        self.user_count_end = user_count_end
-        self.strat_name = strat_name
+    def __init__(self,
+                 __time_at_least: int = 0,
+                 __time_max: int = 0,
+                 __user_count_start: int = 0,
+                 __user_count_end: int = 0,
+                 __strat_name: str = ""):
+        self.__time_at_least = __time_at_least
+        self.__time_max = __time_max
+        self.__user_count_start = __user_count_start
+        self.__user_count_end = __user_count_end
+        self.__strat_name = __strat_name
 
     @abstractmethod
-    def do_algorithm(self):
-        """
-        Do some chosen 'Locust' algorithm
-        :return:
-        """
-        self.time_at_least = 0
-        self.time_max = 0
-        self.user_count_start = 0
-        self.user_count_end = 0
+    def get_time_at_least(self):
+        try:
+            return self.__time_at_least
+        except Exception as e:
+            raise StrategyExceptions(f'Error returning time at least from strategy - {e}.')
+
+    @abstractmethod
+    def get_time_max(self):
+        try:
+            return self.__time_max
+        except Exception as e:
+            raise StrategyExceptions(f'Error returning time max from strategy - {e}.')
+
+    @abstractmethod
+    def get_user_count_start(self):
+        try:
+            return self.__user_count_start
+        except Exception as e:
+            raise StrategyExceptions(f'Error returning user count start variable from strategy - {e}.')
+
+    @abstractmethod
+    def get_user_count_end(self):
+        try:
+            return self.__user_count_end
+        except Exception as e:
+            raise StrategyExceptions(f'Error returning user count end variable from strategy - {e}.')
+
+    @abstractmethod
+    def get_strat_name(self):
+        try:
+            return self.__strat_name
+        except Exception as e:
+            raise StrategyExceptions(f'Error returning strategy name variable from strategy - {e}.')
 
 
 class Context:
@@ -71,9 +102,3 @@ class Context:
     @strategy.getter
     def strategy(self):
         return self._strategy
-
-    def do_strategy(self) -> None:
-        """
-        Instead of implementing multiple versions of an algorithm itself, the Context delegates some work to a Strategy object.
-        """
-        result = self._strategy.do_algorithm()

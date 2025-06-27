@@ -6,6 +6,7 @@ from locust import (
 )
 
 from common.BotLogger import BotLogger as LocustLogger
+from common.Exceptions.LocustExceptions import LocustExceptions
 
 global_logger = LocustLogger('LocustLogger')  # global instance of logger in Locust swarm
 
@@ -26,8 +27,8 @@ class Locust(HttpUser):
 
     def on_start(self):
         """
-
-        :return:
+        Inner locust function, executes during locust entity start
+        :return: None
         """
         wait_time = between(self.time_at_least, self.time_at_max)
         global_logger.log('Locust born')
@@ -38,11 +39,13 @@ class Locust(HttpUser):
             elif response.elapsed.total_seconds() > 0.5:
                 response.failure("Request took too long")
                 global_logger.log('Response took too long time')
+            else:
+                raise LocustExceptions('Unknown error in start locust method')
 
     def on_stop(self):
         """
-
-        :return:
+        Inner locust function, executes during locust entity stop
+        :return: None
         """
         global_logger.log('Locust die')
 
