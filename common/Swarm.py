@@ -33,10 +33,11 @@ class Swarm:
 
     def get_locusts(self):
         """
+        Null safety Get method for locusts list
         Returns locusts list;
         :return: list with Locust entity
         """
-        if self.locusts is not None or len(self.locusts) != 0:
+        if self.locusts is not None and len(self.locusts) != 0:
             return self.locusts
         else:
             self.logger.log('Trying to get locusts, but locusts are None or len is 0')
@@ -44,6 +45,7 @@ class Swarm:
 
     def get_locust_count(self) -> int:
         """
+        Null safety method for locusts count
         Return locusts count
         :return: int value
         """
@@ -52,9 +54,9 @@ class Swarm:
     def proceed_locusts(self, app_runner, locust_spawn_rate: int, logger=None):
         """
         Main function for load test of the page
-        :param logger: logger entity of the proceed_locusts method
-        :param locust_spawn_rate: spawn rate of the locusts
         :param app_runner: app runner
+        :param locust_spawn_rate: spawn rate of the locusts
+        :param logger: logger entity of the proceed_locusts method
         :return: None
         """
         try:
@@ -78,7 +80,7 @@ class Swarm:
 
     def get_page(self):
         """
-        Get method for page in swarm
+        Null safety Get method for page in swarm
         :return: page for destroy
         """
         if self.page is not None:
@@ -89,7 +91,7 @@ class Swarm:
 
     def get_env(self):
         """
-        Get method for env in swarm
+        Null safety Get method for env in swarm
         :return: env
         """
         if self.env is not None:

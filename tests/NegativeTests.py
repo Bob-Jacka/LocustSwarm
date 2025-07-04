@@ -1,6 +1,9 @@
 import unittest
 
 from common.App import App
+from common.Exceptions import (
+    AppExceptions
+)
 from common.Strategies.Context import StrategyEnum
 
 
@@ -10,11 +13,19 @@ class NegativeTests(unittest.TestCase):
     """
 
     def test_should_not_create_app_entity(self):
-        app = App()
+        app: App = None
+        self.assertRaises(
+            AppExceptions.AppExceptions,
+            app=App('unknown_strat')
+        )
         self.assertEqual(app, None)
 
     def test_should_not_return_runner(self):
-        app = App()
+        app: App = None
+        self.assertRaises(
+            AppExceptions.AppExceptions,
+            app=App('unknown_strat')
+        )
         runner = app.get_runner()
         self.assertEqual(runner, None)
 

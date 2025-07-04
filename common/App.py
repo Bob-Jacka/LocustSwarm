@@ -31,7 +31,7 @@ localhost = '127.0.0.1'
 
 class App:
 
-    def __init__(self, strategy: StrategyEnum):
+    def __init__(self, strategy):
         """
         App object that encapsulated some app logic
         :param strategy: Strategy that will be applied to execution
@@ -80,7 +80,7 @@ class App:
 
     def set_runner(self, runner: Runner):
         """
-        Set runner method
+        Null safety Set runner method
         :return: None
         """
         if type(runner) is Runner:
@@ -117,7 +117,7 @@ class App:
 
     def get_swarm(self):
         """
-        Get swarm method
+        Null safety Get swarm method
         :return: Swarm object if it not None
         """
         if self.__swarm is not None:
@@ -128,7 +128,7 @@ class App:
 
     def set_off_swarm_to_page(self, page: str | PathLike, logger):
         """
-        Set swarm off to some given page method
+        Null safety Set swarm off to some given page method
         :param logger: Swarm logger
         :param page: page that will be destroyed by swarm
         :return: None
@@ -174,7 +174,7 @@ class App:
 
     def get_strategy_by_enum(self, strat: StrategyEnum) -> Context:
         """
-        Function for getting app strategy from enum string to Context with Strategy;
+        Null safety function for getting app strategy from enum string to Context with Strategy;
         :param strat: strategy to apply
         :return: created Context
         """
@@ -199,8 +199,8 @@ class App:
 
 def get_help():
     """
-    Function for given help to user
-    Prints all information about app
+    Function for given help to user.
+    Prints all information about app.
     Also prints allowed command line interface flags, which you can use
     :return: None
     """
@@ -216,6 +216,6 @@ def get_help():
         locust_count=<number, ex. 10>
         web_ui_port=<numbers, ex. 8089>
         web_ui_address='127.0.0.1' for localhost or your ip address
-        strategy=<one of {StrategyEnum.value}>
+        strategy=<one of {(StrategyEnum.PEAK, StrategyEnum.SPIKE_TEST, StrategyEnum.SUSTAIN_LOAD, StrategyEnum.RAMP_UP)}>
         """
     )

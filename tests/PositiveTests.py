@@ -1,5 +1,6 @@
 import unittest
 
+import common.App
 from common.App import App
 from common.BotLogger import BotLogger
 from common.Strategies.Context import StrategyEnum
@@ -85,7 +86,7 @@ class PositiveTests(unittest.TestCase):
         )
         self.assertNotEqual(swarm, None)
 
-    def test_should_proceed_locusts_withoud_app_loggers(self):
+    def test_should_proceed_locusts_without_app_loggers(self):
         test_page = 'https://yandex.ru/'
         app = App(StrategyEnum.PEAK)
         app.set_off_swarm_to_page(test_page, None)
@@ -109,3 +110,6 @@ class PositiveTests(unittest.TestCase):
         )
         self.assertNotEqual(app.get_logger(), None)
         self.assertNotEqual(swarm, None)
+
+    def test_should_output_help(self):
+        self.assertRaises(Exception, common.App.get_help())
