@@ -1,2 +1,6 @@
 .venv
 .idea
+locustfiles
+dist
+LocustSwarm.egg-info
+build

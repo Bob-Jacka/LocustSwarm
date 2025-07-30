@@ -1,9 +1,9 @@
 import unittest
 
-import common.App
-from common.App import App
-from common.BotLogger import BotLogger
-from common.Strategies.Context import StrategyEnum
+import LocustSwarm.App
+from LocustSwarm.App import App
+from LocustSwarm.BotLogger import BotLogger
+from LocustSwarm.Strategies.Context import StrategyEnum
 
 
 class PositiveTests(unittest.TestCase):
@@ -64,21 +64,21 @@ class PositiveTests(unittest.TestCase):
     def test_should_create_swarm_thought_app_method_without_logger(self):
         test_page = 'https://yandex.ru/'
         app = App(StrategyEnum.PEAK)
-        app.set_off_swarm_to_page(test_page, None)
+        app.set_swarm_attack_to_page(test_page, None)
         swarm = app.get_swarm()
         self.assertNotEqual(swarm, None)
 
     def test_should_create_swarm_thought_app_method_with_logger(self):
         test_page = 'https://yandex.ru/'
         app = App(StrategyEnum.PEAK)
-        app.set_off_swarm_to_page(test_page, BotLogger('test_logger'))
+        app.set_swarm_attack_to_page(test_page, BotLogger('test_logger'))
         swarm = app.get_swarm()
         self.assertNotEqual(swarm, None)
 
     def test_should_proceed_locusts(self):
         test_page = 'https://yandex.ru/'
         app = App(StrategyEnum.PEAK)
-        app.set_off_swarm_to_page(test_page, BotLogger('test_logger'))
+        app.set_swarm_attack_to_page(test_page, BotLogger('test_logger'))
         swarm = app.get_swarm()
         app.get_swarm().proceed_locusts(
             app_runner=app.get_runner(),
@@ -89,7 +89,7 @@ class PositiveTests(unittest.TestCase):
     def test_should_proceed_locusts_without_app_loggers(self):
         test_page = 'https://yandex.ru/'
         app = App(StrategyEnum.PEAK)
-        app.set_off_swarm_to_page(test_page, None)
+        app.set_swarm_attack_to_page(test_page, None)
         swarm = app.get_swarm()
         app.get_swarm().proceed_locusts(
             app_runner=app.get_runner(),
@@ -101,7 +101,7 @@ class PositiveTests(unittest.TestCase):
     def test_should_proceed_locusts_with_logger(self):
         test_page = 'https://yandex.ru/'
         app = App(StrategyEnum.PEAK)
-        app.set_off_swarm_to_page(test_page, None)
+        app.set_swarm_attack_to_page(test_page, None)
         swarm = app.get_swarm()
         app.get_swarm().proceed_locusts(
             app_runner=app.get_runner(),
@@ -112,4 +112,4 @@ class PositiveTests(unittest.TestCase):
         self.assertNotEqual(swarm, None)
 
     def test_should_output_help(self):
-        self.assertRaises(Exception, common.App.get_help())
+        self.assertRaises(Exception, LocustSwarm.App.get_help())

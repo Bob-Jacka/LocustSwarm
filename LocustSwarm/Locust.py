@@ -1,12 +1,11 @@
 from locust import (
     HttpUser,
-    between,
-    task,
-    tag
+    between
 )
 
-from common.BotLogger import BotLogger as LocustLogger
-from common.Exceptions.LocustExceptions import LocustExceptions
+from LocustSwarm.BotLogger import BotLogger as LocustLogger
+from LocustSwarm.Exceptions.LocustExceptions import LocustExceptions
+from LocustSwarm.LocustSettings import TIME_TOO_LONG
 
 global_logger = LocustLogger('LocustLogger')  # global instance of logger in Locust swarm
 
@@ -17,8 +16,8 @@ class Locust(HttpUser):
         """
         Class representing one web user (Locust) that perform action and load performance
         :param page_to_destroy: page that will be destroying
-        :param args:
-        :param kwargs:
+        :param args: some args that will be given to inner library
+        :param kwargs: some kwargs that will be given to inner library
         """
         self.page_to_destroy = page_to_destroy
         self.time_at_least = time_at_least
@@ -36,7 +35,7 @@ class Locust(HttpUser):
             if response.text != "Success":
                 response.failure("Got wrong response")
                 global_logger.log('Got wrong response')
-            elif response.elapsed.total_seconds() > 0.5:
+            elif response.elapsed.total_seconds() > TIME_TOO_LONG:
                 response.failure("Request took too long")
                 global_logger.log('Response took too long time')
             else:
@@ -48,21 +47,3 @@ class Locust(HttpUser):
         :return: None
         """
         global_logger.log('Locust die')
-
-    @tag('first_prior')
-    @task
-    def bet(self):
-        """
-
-        :return:
-        """
-        pass
-
-    @tag('second_prior')
-    @task
-    def open_history(self):
-        """
-
-        :return:
-        """
-        pass

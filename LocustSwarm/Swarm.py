@@ -6,11 +6,11 @@ from locust.stats import (
     stats_history
 )
 
-from common.Exceptions.SwarmExceptions import SwarmExceptions
-from common.Locust import (
+from LocustSwarm.Exceptions.SwarmExceptions import SwarmExceptions
+from LocustSwarm.Locust import (
     Locust
 )
-from common.Strategies import Context
+from LocustSwarm.Strategies import Context
 
 
 class Swarm:
@@ -45,22 +45,25 @@ class Swarm:
 
     def get_locust_count(self) -> int:
         """
-        Null safety method for locusts count
-        Return locusts count
-        :return: int value
+        Null safety method for locusts count.
+        Return locusts count.
+        :return: int value or exception
         """
-        return len(self.locusts)
+        if self.locusts is not None:
+            return len(self.locusts)
+        else:
+            self.logger.log('Trying to get locusts count, but locusts are None or len is 0')
+            raise SwarmExceptions('Trying to get locusts, but locusts are None or len is 0')
 
-    def proceed_locusts(self, app_runner, locust_spawn_rate: int, logger=None):
+    def proceed_locusts(self, app_runner, locust_spawn_rate: int):
         """
-        Main function for load test of the page
-        :param app_runner: app runner
+        Main function for load testing of the web page.
+        :param app_runner: app runner to proceed attack on web page
         :param locust_spawn_rate: spawn rate of the locusts
-        :param logger: logger entity of the proceed_locusts method
         :return: None
         """
         try:
-            self.logger.log(f'Using {self.__strategy_context.strategy.get_strat_name()} strategy from swarm')
+            self.logger.log(f'Using "{self.__strategy_context.strategy.get_strat_name()}" strategy from swarm')
             self.logger.log("App started work")
 
             start_locust_count = self.__strategy_context.strategy.get_user_count_start()
@@ -74,8 +77,9 @@ class Swarm:
             app_runner.greenlet.join()
 
             self.logger.log("App finished work")
+
         except Exception as e:
-            self.logger.log(f'Error occurred in destroy_page - {e}')
+            self.logger.log(f'Error occurred in destroy web page - {e}')
             raise SwarmExceptions(f'Exception in proceed_locusts - {e}.')
 
     def get_page(self):

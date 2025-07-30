@@ -1,4 +1,5 @@
 # shellcheck disable=SC1009
+# run library like standalone application
 
 python LocustSwarm --web_ui_port=8089 \
             --web_ui_address='127.0.0.1' \

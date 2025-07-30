@@ -1,19 +1,14 @@
-from common.Strategies.Context import Strategy
+from LocustSwarm.Strategies.Context import Strategy
 
 
-class PeakLoad(Strategy):
+class SustainLoad(Strategy):
 
-    def __init__(self,
-                 __time_at_least: int = 5,
-                 __time_max: int = 10,
-                 __user_count_start: int = 100,
-                 __user_count_end: int = 200,
-                 __strat_name: str = 'Peak load'
-                 ):
+    def __init__(self, __time_at_least: int = 5, __time_max: int = 10, __user_count_start: int = 100, __user_count_end: int = 200,
+                 __strat_name: str = 'Peak load'):
         """
-        Users: 100 - 200
-        Duration: 10 min
-        Goal: stability on peak
+        Users: 50 - 100
+        Duration: 20 - 30 min
+        Goal: identifying cumulative problems
         """
         self.____time_at_least = __time_at_least
         self.__time_max = __time_max

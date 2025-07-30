@@ -1,10 +1,10 @@
 import unittest
 
-from common.App import App
-from common.Exceptions import (
+from LocustSwarm.App import App
+from LocustSwarm.Exceptions import (
     AppExceptions
 )
-from common.Strategies.Context import StrategyEnum
+from LocustSwarm.Strategies.Context import StrategyEnum
 
 
 class NegativeTests(unittest.TestCase):

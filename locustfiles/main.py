@@ -1,12 +1,15 @@
-from common.App import App
-from common.Strategies.Context import StrategyEnum
+import LocustSwarm
+from LocustSwarm.Strategies.Context import StrategyEnum
 
-page = 'https://deploy.blacked.team/slots/lost_town_new_visual/'
+page = 'https://yandex.ru'
+"""
+Attack this page
+"""
 
 if __name__ == "__main__":
-    app = App(StrategyEnum.PEAK)
-    app.set_off_swarm_to_page(
-        page=page,
+    app = LocustSwarm.App(StrategyEnum.PEAK, True, False)
+    app.set_swarm_attack_to_page(
+        page_to_destroy=page,
         logger=app.get_logger()
     )
 

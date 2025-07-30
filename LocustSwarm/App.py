@@ -1,8 +1,6 @@
 """
-Wrapper app class for Locust library
+Wrapper app class for Locust library.
 Apply different strategies to Swarm execution
-
-Author - Cupcake_wrld
 """
 
 import sys
@@ -12,37 +10,41 @@ from locust import Events
 from locust.env import Environment
 from locust.runners import Runner
 
-from common import LocustSettings
-from common.BotLogger import BotLogger
-from common.Exceptions.AppExceptions import AppExceptions
-from common.Locust import Locust
-from common.Strategies.Context import (
+from LocustSwarm import LocustSettings
+from LocustSwarm.BotLogger import BotLogger
+from LocustSwarm.Exceptions.AppExceptions import AppExceptions
+from LocustSwarm.Locust import Locust
+from LocustSwarm.Strategies.Context import (
     StrategyEnum,
     Context
 )
-from common.Strategies.PeakLoad import PeakLoad
-from common.Strategies.RampUp import RampUp
-from common.Strategies.SpikeTest import SpikeTest
-from common.Strategies.SustainLoad import SustainLoad
-from common.Swarm import Swarm
+from LocustSwarm.Strategies.PeakLoad import PeakLoad
+from LocustSwarm.Strategies.RampUp import RampUp
+from LocustSwarm.Strategies.SpikeTest import SpikeTest
+from LocustSwarm.Strategies.SustainLoad import SustainLoad
+from LocustSwarm.Swarm import Swarm
 
-localhost = '127.0.0.1'
+localhost = '127.0.0.1:1234'
 
 
 class App:
 
-    def __init__(self, strategy):
+    def __init__(self, strategy, is_need_for_log: bool = False, is_file_write: bool = False):
         """
         App object that encapsulated some app logic
         :param strategy: Strategy that will be applied to execution
+        :param is_need_for_log: bool value if you need logs in console
+        :param is_file_write: if you need to write logs to file
         """
-        self.__logger = BotLogger('LocustLogger')
+        sys.argv.append('--host=' + localhost)  # append argument to the console interface
+        self.__logger = BotLogger('LocustLogger', is_file_write=is_file_write, is_on=is_need_for_log)
         params = self.resolve_cli_args()
         if params is not None:
             LocustSettings.WEB_UI_ADDRESS = params.setdefault('web_ui_address', None)  # get or default
             LocustSettings.WEB_UI_PORT = params.setdefault('web_ui_port', None)  # get or default
             LocustSettings.LOCUSTS_START_COUNT = params.setdefault('locust_start_count', 10)
-
+        else:
+            self.__logger.log('No command line arguments found')
         try:
             self.__swarm: Swarm | None = None
             self.__strategy = self.get_strategy_by_enum(strategy)
@@ -105,8 +107,8 @@ class App:
     def set_logger(self, logger: BotLogger):
         """
         Null safety set logger
-        :param logger:
-        :return:
+        :param logger: another logger to set
+        :return: None
         """
         if logger is not None:
             self.__logger = logger
@@ -117,7 +119,7 @@ class App:
 
     def get_swarm(self):
         """
-        Null safety Get swarm method
+        Null safety Get method for swarm;
         :return: Swarm object if it not None
         """
         if self.__swarm is not None:
@@ -126,17 +128,17 @@ class App:
             self.__logger.log('Attempt to get swarm while swarm is None')
             self.__logger.log('Create swarm first')
 
-    def set_off_swarm_to_page(self, page: str | PathLike, logger):
+    def set_swarm_attack_to_page(self, page_to_destroy: str | PathLike, logger):
         """
-        Null safety Set swarm off to some given page method
-        :param logger: Swarm logger
-        :param page: page that will be destroyed by swarm
+        Null safety Set swarm off to some given page.
+        :param logger: swarm logger
+        :param page_to_destroy: page that will be destroyed by swarm
         :return: None
         """
         try:
-            if page is not None:
+            if page_to_destroy is not None:
                 self.__swarm = Swarm(
-                    page_to_destroy=page,
+                    page_to_destroy=page_to_destroy,
                     env=self.__env,
                     strat_context=self.__strategy,
                     logger=logger
@@ -144,18 +146,21 @@ class App:
                 self.__logger.log('Swarm created')
             else:
                 self.__logger.log('Page is None!')
+                raise AppExceptions('Page cannot be None')
         except Exception as e:
             self.__logger.log(f'Error occurred in Setting swarm instance - {e}')
             raise AppExceptions(f'Error occurred in Setting swarm instance - {e}.')
 
-    def resolve_cli_args(self) -> dict[str, str | int] | None:
+    @staticmethod
+    def resolve_cli_args() -> dict[str, str | int] | None:
         """
         Function for accessing CLI arguments
-        :return: tuple with arguments or None if no arg given
+        :return: dict with arguments or None if no command line interface arg given
         """
         sys_args = sys.argv
         lenght = len(sys_args)
-        if lenght > 1:
+        if lenght >= 1:
+            sys_args = sys_args[1:]  # remove first path name argument
             resolved_args: dict[str, str | int] = dict()  # dict with split arguments
             for param in sys_args:
                 if '--' in param and '=' in param:
@@ -164,8 +169,7 @@ class App:
                     arg_value = arg_pair[1]  # value of the argument, ex. 127.0.0.1
                     resolved_args[arg_name] = arg_value
                 else:
-                    self.__logger.log('Wrong argument received, expect arg with "--" and "="')
-                    raise AppExceptions('Argument error.')
+                    raise AppExceptions('Wrong argument received, expect arg with "--" and "="')
             return resolved_args
         elif lenght == 2 and sys_args[1] == 'help':
             get_help()

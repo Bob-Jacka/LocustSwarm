@@ -3,4 +3,9 @@ WEB_UI_PORT = 8089
 
 LOCUSTS_START_COUNT = 0  # start count of the locusts that was given from command line interface
 
-APP_VERSION = '0.0.2'
+TIME_TOO_LONG = 0.5
+"""
+Time to drop request
+"""
+
+APP_VERSION = '1.0.0'

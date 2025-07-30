@@ -1,2 +1,5 @@
 locust~=2.37.10
 gevent~=25.5.1
+setuptools~=80.9.0
+wheel~=0.45.1
+tween~=0.0.3
