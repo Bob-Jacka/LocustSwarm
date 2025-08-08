@@ -3,9 +3,9 @@ from locust import (
     between
 )
 
-from LocustSwarm.BotLogger import BotLogger as LocustLogger
-from LocustSwarm.Exceptions.LocustExceptions import LocustExceptions
-from LocustSwarm.LocustSettings import TIME_TOO_LONG
+from core.BotLogger import BotLogger as LocustLogger
+from core.Exceptions.LocustExceptions import LocustExceptions
+from core.LocustSettings import TIME_TOO_LONG
 
 global_logger = LocustLogger('LocustLogger')  # global instance of logger in Locust swarm
 

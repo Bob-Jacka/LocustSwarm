@@ -1,14 +1,14 @@
-from LocustSwarm.Strategies.Context import Strategy
+from core.Strategies.Context import Strategy
 
 
-class RecoveryTest(Strategy):
+class SpikeTest(Strategy):
 
-    def __init__(self, __time_at_least: int = 2.00, __time_max: int = 2.00, __user_count_start: int = 50, __user_count_end: int = 50,
-                 __strat_name: str = 'Recovery Test'):
+    def __init__(self, __time_at_least: int = 0.05, __time_max: int = 0.05, __user_count_start: int = 100, __user_count_end: int = 100,
+                 __strat_name: str = 'Peak load'):
         """
-        Users: 50
-        Duration: 200 sec
-        Goal: logic recovery
+        Users: 100
+        Duration: 5 sec
+        Goal: reaction to a sharp jump
         """
         self.____time_at_least = __time_at_least
         self.__time_max = __time_max

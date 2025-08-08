@@ -1,14 +1,14 @@
-from LocustSwarm.Strategies.Context import Strategy
+from core.Strategies.Context import Strategy
 
 
-class RampUp(Strategy):
+class RecoveryTest(Strategy):
 
-    def __init__(self, __time_at_least: int = 5, __time_max: int = 10, __user_count_start: int = 5, __user_count_end: int = 100,
-                 __strat_name: str = 'Peak load'):
+    def __init__(self, __time_at_least: int = 2.00, __time_max: int = 2.00, __user_count_start: int = 50, __user_count_end: int = 50,
+                 __strat_name: str = 'Recovery Test'):
         """
-        Users: 5 → 100
-        Duration: 5 – 10 min
-        Goal: check degradation
+        Users: 50
+        Duration: 200 sec
+        Goal: logic recovery
         """
         self.____time_at_least = __time_at_least
         self.__time_max = __time_max

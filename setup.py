@@ -10,8 +10,8 @@ def readme():
 
 
 setup(
-    name='LocustSwarm',
-    version='1.0.0',
+    name='locust_swarm_wrapper_lib',
+    version='0.0.1',
     author='Cupcake_wrld',
     author_email='evilprog@yandex.ru',
     description='App for loading testing, wrapper for locust library',
@@ -23,9 +23,6 @@ setup(
         'Programming Language :: Python :: 3.12',
         'Operating System :: OS Independent'
     ],
-    keywords='files small console ',
-    project_urls={
-        'Pypi': 'Cupcake_wrld'
-    },
+    keywords='files small console load_testing',
     python_requires='>=3.12'
 )

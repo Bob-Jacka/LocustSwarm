@@ -6,11 +6,11 @@ from locust.stats import (
     stats_history
 )
 
-from LocustSwarm.Exceptions.SwarmExceptions import SwarmExceptions
-from LocustSwarm.Locust import (
+from core.Exceptions.SwarmExceptions import SwarmExceptions
+from core.Locust import (
     Locust
 )
-from LocustSwarm.Strategies import Context
+from core.Strategies import Context
 
 
 class Swarm:
@@ -79,7 +79,7 @@ class Swarm:
             self.logger.log("App finished work")
 
         except Exception as e:
-            self.logger.log(f'Error occurred in destroy web page - {e}')
+            self.logger.log(f'Error occurred in proceed_locusts - {e}')
             raise SwarmExceptions(f'Exception in proceed_locusts - {e}.')
 
     def get_page(self):

@@ -1,4 +1,4 @@
-# Locust swarm
+# Locust swarm wrapper lib
 
 ## What is it?:
 
@@ -15,12 +15,12 @@ Simple wrapper lib for another lib, with a little bit of StarCraft 2 in it.
 
 1. None (I am serious now)
 
-## Locust swarm requirements:
+## Locust swarm lib requirements:
 
 1. Python with version 3.12 or above
 2. Some storage space on your personal computer
 
-## Locust swarm components:
+## Locust swarm lib components:
 
 1. App - abstraction class for swarm
 2. Swarm class - abstraction class for locusts

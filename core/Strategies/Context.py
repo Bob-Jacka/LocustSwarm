@@ -4,7 +4,7 @@ from abc import (
 )
 from enum import Enum
 
-from LocustSwarm.Exceptions.StrategyExceptions import StrategyExceptions
+from core.Exceptions.StrategyExceptions import StrategyExceptions
 
 
 class StrategyEnum(Enum):
@@ -20,7 +20,7 @@ class StrategyEnum(Enum):
 
 class Strategy(ABC):
     """
-    The Strategy interface declares operations LocustSwarm to all supported versions of some algorithm.
+    The Strategy interface declares operations core to all supported versions of some algorithm.
     A context uses this interface to invoke the algorithm defined by the Concrete Strategies.
     """
 

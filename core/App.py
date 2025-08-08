@@ -10,19 +10,19 @@ from locust import Events
 from locust.env import Environment
 from locust.runners import Runner
 
-from LocustSwarm import LocustSettings
-from LocustSwarm.BotLogger import BotLogger
-from LocustSwarm.Exceptions.AppExceptions import AppExceptions
-from LocustSwarm.Locust import Locust
-from LocustSwarm.Strategies.Context import (
+from core import LocustSettings
+from core.BotLogger import BotLogger
+from core.Exceptions.AppExceptions import AppExceptions
+from core.Locust import Locust
+from core.Strategies.Context import (
     StrategyEnum,
     Context
 )
-from LocustSwarm.Strategies.PeakLoad import PeakLoad
-from LocustSwarm.Strategies.RampUp import RampUp
-from LocustSwarm.Strategies.SpikeTest import SpikeTest
-from LocustSwarm.Strategies.SustainLoad import SustainLoad
-from LocustSwarm.Swarm import Swarm
+from core.Strategies.PeakLoad import PeakLoad
+from core.Strategies.RampUp import RampUp
+from core.Strategies.SpikeTest import SpikeTest
+from core.Strategies.SustainLoad import SustainLoad
+from core.Swarm import Swarm
 
 localhost = '127.0.0.1:1234'
 

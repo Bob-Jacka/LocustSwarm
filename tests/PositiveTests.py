@@ -1,9 +1,9 @@
 import unittest
 
-import LocustSwarm.App
-from LocustSwarm.App import App
-from LocustSwarm.BotLogger import BotLogger
-from LocustSwarm.Strategies.Context import StrategyEnum
+import core.App
+from core.App import App
+from core.BotLogger import BotLogger
+from core.Strategies.Context import StrategyEnum
 
 
 class PositiveTests(unittest.TestCase):
@@ -112,4 +112,4 @@ class PositiveTests(unittest.TestCase):
         self.assertNotEqual(swarm, None)
 
     def test_should_output_help(self):
-        self.assertRaises(Exception, LocustSwarm.App.get_help())
+        self.assertRaises(Exception, core.App.get_help())
